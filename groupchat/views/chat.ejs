@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat Room - <%= room %></title>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <h1>Chat Room: <%= room %></h1>
+  <div id="chat">
+    <div id="messages"></div>
+    <input id="messageInput" autocomplete="off" /><button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    const socket = io();
+    const room = '<%= room %>';
+
+    socket.emit('joinRoom', room);
+
+    socket.on('message', (message) => {
+      const messages = document.getElementById('messages');
+      const msgDiv = document.createElement('div');
+      msgDiv.textContent = message;
+      messages.appendChild(msgDiv);
+    });
+
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value;
+      socket.emit('chatMessage', { room, message });
+      input.value = '';
+    }
+  </script>
+</body>
+</html>
